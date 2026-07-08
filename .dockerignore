@@ -1,0 +1,31 @@
+# Keep the Docker build context small: exclude regenerable caches, runtime
+# outputs, and host-specific junk. The pipeline code and ref_seq FASTAs +
+# coordinate table are the only things the image needs at build time.
+
+# Nextflow runtime
+.nextflow/
+work/
+*.log
+trace.txt
+pipeline_report.html
+timeline_report.html
+
+# Pipeline outputs
+results/
+outputs/
+
+# Large regenerable cache (the coordinate table itself IS included)
+ref_seq/genbank_cache/
+ref_seq/*-original.fasta
+ref_seq/*_audit.tsv
+
+# Python
+__pycache__/
+*.py[cod]
+
+# OS / editors
+.DS_Store
+.git/
+.gitignore
+.idea/
+.vscode/

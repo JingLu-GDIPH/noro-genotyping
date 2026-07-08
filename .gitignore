@@ -1,0 +1,44 @@
+# --- Nextflow runtime ---
+.nextflow/
+nextflow.log
+nextflow.log.*
+work/
+trace.txt
+pipeline_report.html
+timeline_report.html
+*.dag.html
+
+# --- Pipeline outputs ---
+results/
+outputs/
+
+# --- Reference data caches (regenerable, large) ---
+# The GenBank cache holds 1500+ .gb files (~26 MB) produced by
+# download_genome_annotations.py. It is regenerable from NCBI and should not be
+# committed; the derived genome_gene_coordinates.tsv IS committed.
+ref_seq/genbank_cache/
+
+# --- Original / audit intermediates (regenerable by merge scripts) ---
+ref_seq/*-original.fasta
+ref_seq/*_audit.tsv
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# --- Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Conda local cache (nextflow.config cacheDir) ---
+conda/env-*
