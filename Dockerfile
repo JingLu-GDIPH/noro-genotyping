@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 #
 # Norovirus GI/GII genotyping pipeline — self-contained Docker image.
 #
@@ -49,19 +48,18 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER \
 COPY --chown=$MAMBA_USER:$MAMBA_USER ref_seq/ /pipeline/ref_seq/
 
 # --- 3. Runtime entrypoint ---------------------------------------------------
-# Activate the conda env for every shell the container spawns.
-ENV MAMBA_ENV_ACTIVATED=1
+# The conda env is installed into base (/opt/conda), so putting /opt/conda/bin
+# on PATH is enough for python3/blastn/mafft/fasttree/nextflow to resolve. We do
+# NOT wrap the entrypoint in `micromamba run` because that helper writes to a
+# cache dir that is not writable when Nextflow mounts work dirs as root.
 ENV PATH=/opt/conda/bin:$PATH
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
+ENV MAMBA_ROOT_PREFIX=/opt/conda
+ENV CONDA_PREFIX=/opt/conda
 
 # Working directory for the user's data; the pipeline writes outputs wherever
 # --outdir/--output-prefix point (typically a mounted volume).
 WORKDIR /data
 
-# Default shell drops into an activated env so `python3`, `nextflow`,
-# `blastn`, `mafft`, `fasttree` are all on PATH.
-SHELL ["micromamba", "run", "-n", "base", "/bin/bash", "-c"]
-
-ENTRYPOINT ["micromamba", "run", "-n", "base"]
 CMD ["nextflow", "run", "/pipeline/main.nf", "--help"]
